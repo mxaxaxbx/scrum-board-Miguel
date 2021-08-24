@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 
 const dbconnection = async () => {
     try {
-        await mongoose.connect(process.env.DB_CONNECTION, {
+        await mongoose.connect(process.env.BD_CONNECTION, {
             useNewUrlParser    : true,
             useFindAndModify   : false,
             useCreateIndex     : true,
             useUnifiedTopology : true,
         });
-        console.log("Database connection successfully");;
+        console.log("Connection with MongoDB: ON");
 
-    } catch( err ) {
-        console.log("An error ocurred trying connectin to database: ", err);
-        throw new Error("An error ocurred trying connectin to database");
+    } catch(e) {
+        console.log("Error connectiong to MongoDB: ", e);
+        throw new Error("Error connecting to MongoDB");
 
     }
 }

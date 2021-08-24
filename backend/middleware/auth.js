@@ -1,22 +1,22 @@
 const jwt = require('jsonwebtoken');
 
-const auth = async( req, res, next) => {
+const auth = async (req, res, next) => {
+    let jwtToken = req.header("Authorization");
+    
+    if( !jwtToken ) return res.status(401).send({
+        code: 104,
+        message: 'Authorization denied',
+    });
+
+    jwtToken = jwtToken.split(' ')[1];
+
+    if( !jwtToken ) return res.status(401).send({
+        code: 104,
+        message: 'Authorization denied',
+    });
+
     try {
-        let jwtToken = req.header('Authorization');
-
-        if( !jwtToken ) return res.status(401).send({
-            code: 104,
-            message: 'Authorization denied',
-        });
-
-        jwtToken = jwtToken.split(' ')[1];
-
-        if( !jwtToken ) return res.status(401).send({
-            code: 104,
-            message: 'Authorization denied',
-        });
-
-        const payload = await jwt.verify(jwtToken, process.env.SECRET_KEY_JWT);
+        const payload = await jwt.verify( jwtToken, process.env.SECRET_KEY_JWT );
         req.user = payload;
         next();
 
@@ -25,8 +25,7 @@ const auth = async( req, res, next) => {
         return res.status(401).send({
             code: 104,
             message: 'Invalid Token',
-        });
-
+        })
     }
 }
 

@@ -1,5 +1,5 @@
-const { compare } = require('bcrypt');
-const userModel = require('../models/users.model');
+const bcrypt    = require('bcrypt');
+const userModel = require('../models/user.model');
 
 const login = async (req, res) => {
     let user = await userModel.findOne( { email: req.body.email } );
@@ -9,7 +9,12 @@ const login = async (req, res) => {
         message: 'Invalid credentials',
     });
 
-    const hash = await compare( req.body.password, user.password );
+    if( !user.dbStatus ) return res.status(401).send({
+        code: 102,
+        message: 'Invalid credentials',
+    });
+
+    const hash = await bcrypt.compare( req.body.password, user.password );
 
     if( !hash ) return res.status(401).send({
         code: 102,
@@ -29,4 +34,3 @@ const login = async (req, res) => {
 }
 
 module.exports = {login};
-
